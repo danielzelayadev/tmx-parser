@@ -26,3 +26,11 @@
 *.exe
 *.out
 *.app
+
+#CodeBlocks
+/bin
+/obj
+*.depend
+*.layout
+main.cpp
+*.cbp
