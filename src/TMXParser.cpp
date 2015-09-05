@@ -22,6 +22,11 @@ TMXParser::~TMXParser()
    if(tmxFile) delete tmxFile;
 }
 
+char* TMXParser::getError()
+{
+   return "";
+}
+
 Map* TMXParser::parse(string fileDir)
 {
    this->fileDir = fileDir;

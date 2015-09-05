@@ -28,6 +28,8 @@ class TMXParser
         Map* parse();
         Map* parse(string fileDir);
 
+        char* getError();
+
     private:
 
         XMLDocument* tmxFile;
