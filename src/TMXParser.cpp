@@ -54,15 +54,12 @@ Map* TMXParser::parse()
 
    if(!root) { errorHandler.setErrorId(NO_MAP_NODE); return nullptr; }
 
-   printf("Beginning parse...\n\n");
-
    if(!loadMapAttributes(tiledMap, root->ToElement())) return nullptr;
 
    XMLNode* tmp = root->FirstChildElement();
 
    while(tmp)
    {
-     printf("Parsing "); printf(tmp->Value()); printf("...\n");
 
      if(!strcmp(tmp->Value(), "tileset"))
      {
@@ -87,7 +84,6 @@ Map* TMXParser::parse()
      tmp = tmp->NextSibling();
    }
 
-   printf("\nParse ended successfully! :)\n");
    return tiledMap;
 }
 
@@ -105,13 +101,13 @@ bool TMXParser::loadMapAttributes(Map* tiledMap, XMLElement* element)
 
    tiledMap->orientation = ori;
 
-   if(element->QueryIntAttribute("width", &tiledMap->tilesX) != 0) { tiledMap->tilesX = 0; } //DEFAULTING
+   element->QueryIntAttribute("width", &tiledMap->tilesX); //DEFAULTING
 
-   if(element->QueryIntAttribute("height", &tiledMap->tilesY) != 0) { tiledMap->tilesY = 0; } //DEFAULTING
+   element->QueryIntAttribute("height", &tiledMap->tilesY); //DEFAULTING
 
-   if(element->QueryIntAttribute("tilewidth", &tiledMap->tileWidth) != 0) { tiledMap->tileWidth = 0; } //DEFAULTING
+   element->QueryIntAttribute("tilewidth", &tiledMap->tileWidth); //DEFAULTING
 
-   if(element->QueryIntAttribute("tileheight", &tiledMap->tileHeight) != 0) { tiledMap->tileHeight = 0; } //DEFAULTING
+   element->QueryIntAttribute("tileheight", &tiledMap->tileHeight); //DEFAULTING
 
    tiledMap->width = tiledMap->tilesX * tiledMap->tileWidth;
    tiledMap->height = tiledMap->tilesY * tiledMap->tileHeight;
@@ -120,11 +116,7 @@ bool TMXParser::loadMapAttributes(Map* tiledMap, XMLElement* element)
 
    ro = element->Attribute("renderorder");
 
-   if(!ro) printf("No render order.\n");
-
-   else tiledMap->renderOrder = ro;
-
-   tiledMap->print();
+   if(ro) tiledMap->renderOrder = ro;
 
    return true;
 }
@@ -139,7 +131,6 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
    while(tmp)
    {
-      printf("Parsing "); printf(tmp->Value()); printf(" for tileset %d...\n", tiledMap->tilesets.size());
 
       if(!strcmp(tmp->Value(), "tileoffset"))
       {
@@ -189,27 +180,21 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
    src = element->Attribute("source");
 
-   if(!src) printf("No source for the tileset.\n");
-
-   else tileset->source = src;
+   if(src) tileset->source = src;
 
    const char* nm = "";
 
    nm = element->Attribute("name");
 
-   if(!nm) printf("No name specified for the tileset.\n");
+   if(nm) tileset->name = nm;
 
-   else tileset->name = nm;
+   element->QueryIntAttribute("tilewidth", &tileset->tilewidth);
 
-   if(element->QueryIntAttribute("tilewidth", &tileset->tilewidth) != 0) { tileset->tilewidth = 0; } //DEFAULTING
+   element->QueryIntAttribute("tileheight", &tileset->tileheight);
 
-   if(element->QueryIntAttribute("tileheight", &tileset->tileheight) != 0) { tileset->tileheight = 0; } //DEFAULTING
+   element->QueryIntAttribute("spacing", &tileset->spacing);
 
-   if(element->QueryIntAttribute("spacing", &tileset->spacing) != 0)
-     printf("No spacing specified; defaulting to 0.\n");
-
-   if(element->QueryIntAttribute("margin", &tileset->margin) != 0)
-     printf("No margin specified; defaulting to 0.\n");
+   element->QueryIntAttribute("margin", &tileset->margin);
 
    return true;
  }
@@ -218,11 +203,8 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
  {
     Tileset* tileset = tiledMap->tilesets.at(tiledMap->tilesets.size()-1);
 
-    if(element->QueryIntAttribute("x", &tileset->offset->x) != 0)
-     printf("No x offset specified; defaulting to 0.\n");
-
-    if(element->QueryIntAttribute("y", &tileset->offset->y) != 0)
-     printf("No y offset specified; defaulting to 0.\n");
+    element->QueryIntAttribute("x", &tileset->offset->x);
+    element->QueryIntAttribute("y", &tileset->offset->y);
 
     return true;
  }
@@ -235,7 +217,6 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     while(tmp)
     {
-       printf("Parsing "); printf(tmp->Value()); printf(" for image...\n");
 
        if(!strcmp(tmp->Value(), "data"))
        {
@@ -256,9 +237,7 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     str = element->Attribute("format");
 
-    if(!str) printf("No format specified.\n");
-
-    else image->format = str;
+    if(str) image->format = str;
 
     str = element->Attribute("source");
 
@@ -268,13 +247,11 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     str = element->Attribute("trans");
 
-    if(!str) printf("No trans specified.\n");
+    if(str) image->trans = str;
 
-    else image->trans = str;
+    element->QueryIntAttribute("width", &image->width); //DEFAULTING
 
-    if(element->QueryIntAttribute("width", &image->width) != 0) { image->width = 0; } //DEFAULTING
-
-    if(element->QueryIntAttribute("height", &image->height) != 0) { image->height = 0; } //DEFAULTING
+    element->QueryIntAttribute("height", &image->height); //DEFAULTING
 
     return true;
  }
@@ -287,7 +264,6 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     while(tmp)
     {
-      printf("Parsing "); printf(tmp->Value()); printf(" for data node...\n");
 
       if(!strcmp(tmp->Value(), "tile"))
       {
@@ -316,9 +292,7 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
    str = element->Attribute("compression");
 
-   if(!str) printf("Data compression not specified.\n");
-
-   else data->compression = str;
+   if(str) data->compression = str;
 
    if(!strcmp(data->encoding.c_str(), "csv"))
      data->data = element->GetText();
@@ -340,7 +314,6 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
    while(tmp)
    {
-     printf("Parsing "); printf(tmp->Value()); printf(" for tile node...\n");
 
      if(!strcmp(tmp->Value(), "objectgroup"))
      {
@@ -369,12 +342,9 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     str = element->Attribute("terrain");
 
-    if(!str) printf("No terrain specified.\n");
+    if(str) tile->terrain = str;
 
-    else tile->terrain = str;
-
-    if(element->QueryFloatAttribute("probability", &tile->probability) != 0)
-       printf("No tile probability specified.\n");
+    element->QueryFloatAttribute("probability", &tile->probability);
 
     return true;
   }
@@ -385,7 +355,6 @@ bool TMXParser::loadProperties(vector<Property*>* properties, XMLNode* propertie
 
     while(tmp)
     {
-       printf("Parsing "); printf(tmp->Value()); printf("...\n");
 
        if(!strcmp(tmp->Value(), "property"))
        {
@@ -408,15 +377,11 @@ bool TMXParser::loadPropertyAttributes(vector<Property*>* properties, XMLElement
 
     str = element->Attribute("name");
 
-    if(!str) printf("Property name not specified.\n");
-
-    else prop->name = str;
+    if(str) prop->name = str;
 
     str = element->Attribute("value");
 
-    if(!str) printf("Property value not specified.\n");
-
-    else prop->value = str;
+    if(str) prop->value = str;
 
     properties->push_back(prop);
 
@@ -429,7 +394,6 @@ bool TMXParser::loadTerrainTypes(vector<Terrain*>* terrains, XMLNode* terraintyp
 
     while(tmp)
     {
-      printf("Parsing "); printf(tmp->Value()); printf("...\n");
 
       if(!strcmp(tmp->Value(), "terrain"))
       {
@@ -472,7 +436,6 @@ bool TMXParser::loadLayerNode(Map* tiledMap, XMLNode* layerNode)
 
     while(tmp)
     {
-       printf("Parsing "); printf(tmp->Value()); printf(" for layer...\n");
 
        if(!strcmp(tmp->Value(), "data"))
        {
@@ -504,11 +467,9 @@ bool TMXParser::loadLayerAttributes(Layer* layer, XMLElement* element)
 
     layer->name = str;
 
-    if(element->QueryFloatAttribute("opacity", &layer->opacity) != 0)
-       printf("Opacity not specified...Defaulting to 1.\n");
+    element->QueryFloatAttribute("opacity", &layer->opacity);
 
-    if(element->QueryBoolAttribute("visible", &layer->visible) != 0)
-       printf("Visibility not specified...Defaulting to visible.\n");
+    element->QueryBoolAttribute("visible", &layer->visible);
 
     return true;
 }
@@ -523,7 +484,6 @@ bool TMXParser::loadImageLayerNode(Map* tiledMap, XMLNode* imageLayerNode)
 
     while(tmp)
     {
-      printf("Parsing "); printf(tmp->Value()); printf(" for image layer...\n");
 
       if(!strcmp(tmp->Value(), "properties"))
       {
@@ -546,11 +506,9 @@ bool TMXParser::loadImageLayerAttributes(ImageLayer* iLayer, XMLElement* element
 {
     if(!loadLayerAttributes((Layer*)iLayer, element)) return false;
 
-    if(element->QueryIntAttribute("x", &iLayer->x) != 0)
-       printf("X position not specified for image layer...Defaulting to 0.\n");
+    element->QueryIntAttribute("x", &iLayer->x);
 
-    if(element->QueryIntAttribute("y", &iLayer->y) != 0)
-       printf("Y position not specified for image layer...Defaulting to 0.\n");
+    element->QueryIntAttribute("y", &iLayer->y);
 
     return true;
 }
@@ -565,7 +523,6 @@ bool TMXParser::loadObjectGroupNode(Map* tiledMap, XMLNode* objectGroupNode)
 
     while(tmp)
     {
-      printf("Parsing "); printf(tmp->Value()); printf(" for object layer...\n");
 
       if(!strcmp(tmp->Value(), "object"))
       {
@@ -602,7 +559,6 @@ bool TMXParser::loadObject(vector<MapObject*>* objects, XMLNode* objectNode)
 
     while(tmp)
     {
-      printf("Parsing "); printf(tmp->Value()); printf(" for object...\n");
 
       if(!strcmp(tmp->Value(), "properties"))
       {
@@ -659,28 +615,23 @@ bool TMXParser::loadObjectAttributes(MapObject* object, XMLElement* element)
 {
     if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
-    if(element->QueryIntAttribute("id", &object->id) != 0)
-       printf("Object id not specified.\n");
-    if(element->QueryIntAttribute("gid", &object->gid) != 0)
-       printf("No reference to tile.\n");
-    if(element->QueryIntAttribute("rotation", &object->rotation) != 0)
-       printf("Object rotation not specified...Defaulting to 0.\n");
-    if(element->QueryBoolAttribute("visible", &object->visible) != 0)
-       printf("Object visibility not specified...Defaulting to visible.\n");
+    element->QueryIntAttribute("id", &object->id);
+
+    element->QueryIntAttribute("gid", &object->gid);
+
+    element->QueryIntAttribute("rotation", &object->rotation);
+
+    element->QueryBoolAttribute("visible", &object->visible);
 
     const char* str = "";
 
     str = element->Attribute("name");
 
-    if(!str) printf("Object name not specified.\n");
-
-    else object->name = str;
+    if(str) object->name = str;
 
     str = element->Attribute("type");
 
-    if(!str) printf("Object type not specified.\n");
-
-    else object->type = str;
+    if(str) object->type = str;
 
     return true;
 }
@@ -689,17 +640,13 @@ bool TMXParser::loadRectAttributes(RectangleMapObject* rmo, XMLElement* element)
 {
     if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
-    if(element->QueryIntAttribute("x", &rmo->x) != 0)
-       printf("X position not specified for rectangle object...Defaulting to 0.\n");
+    element->QueryIntAttribute("x", &rmo->x);
 
-    if(element->QueryIntAttribute("y", &rmo->y) != 0)
-       printf("Y position not specified for rectangle object...Defaulting to 0.\n");
+    element->QueryIntAttribute("y", &rmo->y);
 
-    if(element->QueryIntAttribute("width", &rmo->width) != 0)
-       printf("Y position not specified for rectangle object...Defaulting to 0.\n");
+    element->QueryIntAttribute("width", &rmo->width);
 
-    if(element->QueryIntAttribute("height", &rmo->height) != 0)
-       printf("Y position not specified for rectangle object...Defaulting to 0.\n");
+    element->QueryIntAttribute("height", &rmo->height);
 
     return true;
 }
@@ -708,17 +655,13 @@ bool TMXParser::loadEllipseAttributes(EllipseMapObject* ellipse, XMLElement* ele
 {
     if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
-    if(element->QueryIntAttribute("x", &ellipse->x) != 0)
-       printf("X position not specified for ellipse object...Defaulting to 0.\n");
+    element->QueryIntAttribute("x", &ellipse->x);
 
-    if(element->QueryIntAttribute("y", &ellipse->y) != 0)
-       printf("Y position not specified for ellipse object...Defaulting to 0.\n");
+    element->QueryIntAttribute("y", &ellipse->y);
 
-    if(element->QueryIntAttribute("width", &ellipse->width) != 0)
-       printf("Y position not specified for ellipse object...Defaulting to 0.\n");
+    element->QueryIntAttribute("width", &ellipse->width);
 
-    if(element->QueryIntAttribute("height", &ellipse->height) != 0)
-       printf("Y position not specified for ellipse object...Defaulting to 0.\n");
+    element->QueryIntAttribute("height", &ellipse->height);
 
     return true;
 }
@@ -731,9 +674,7 @@ bool TMXParser::loadPolygonAttributes(PolygonMapObject* poly, XMLElement* elemen
 
     str = element->Attribute("points");
 
-    if(!str) printf("Points not specified for polygon.\n");
-
-    else
+    if(str)
     {
        string points = str;
        stringstream strm;
@@ -773,9 +714,7 @@ bool TMXParser::loadPolylineAttributes(PolylineMapObject* poly, XMLElement* elem
 
     str = element->Attribute("points");
 
-    if(!str) printf("Points not specified for polyline.\n");
-
-    else
+    if(str)
     {
        string points = str;
        stringstream strm;
