@@ -5,6 +5,11 @@ ErrorHandler::ErrorHandler()
     errId = -1;
 }
 
+void ErrorHandler::setErrorId(int id)
+{
+   this->errId = id;
+}
+
 char* ErrorHandler::getError()
 {
     switch(errId)
@@ -57,7 +62,7 @@ char* ErrorHandler::getError()
         case NO_NAME_IN_TERRAIN:
         return "No terrain name specified.\n";
 
-        return NO_TILE_IN_TERRAIN:
+        case NO_TILE_IN_TERRAIN:
         return "No tile specified for a certain terrain node.\n";
 
         case MISSING_LAYER_ATTRIBUTES:
