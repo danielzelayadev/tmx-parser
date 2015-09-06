@@ -14,6 +14,8 @@
 #include "PolygonMapObject.h"
 #include "PolylineMapObject.h"
 
+#include "ErrorHandler.h"
+
 using namespace tinyxml2;
 using std::string;
 using std::vector;
@@ -34,6 +36,8 @@ class TMXParser
 
         XMLDocument* tmxFile;
         string fileDir;
+
+        ErrorHandler errorHandler;
 
         bool loadMapAttributes(Map* tiledMap, XMLElement* element);
         bool loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode);
