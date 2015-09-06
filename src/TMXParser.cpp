@@ -24,7 +24,7 @@ TMXParser::~TMXParser()
 
 char* TMXParser::getError()
 {
-   return "";
+   return errorHandler.getError();
 }
 
 Map* TMXParser::parse(string fileDir)
@@ -101,19 +101,19 @@ bool TMXParser::loadMapAttributes(Map* tiledMap, XMLElement* element)
 
    ori = element->Attribute("orientation");
 
-   if(!ori) { printf("No orientation attribute.\n"); return false; }
+   if(!ori) { printf("No orientation attribute.\n"); return false; } //HACER UN DEFAULT MEJOR
 
    tiledMap->orientation = ori;
 
-   if(element->QueryIntAttribute("width", &tiledMap->tilesX) != 0) { printf("No width attribute.\n"); return false; }
+   if(element->QueryIntAttribute("width", &tiledMap->tilesX) != 0) { printf("No width attribute.\n"); return false; } //Default a 0
 
-   if(element->QueryIntAttribute("height", &tiledMap->tilesY) != 0) { printf("No height attribute.\n"); return false; }
+   if(element->QueryIntAttribute("height", &tiledMap->tilesY) != 0) { printf("No height attribute.\n"); return false; } //Default a 0
 
    if(element->QueryIntAttribute("tilewidth", &tiledMap->tileWidth) != 0)
-   { printf("No tilewidth attribute.\n"); return false; }
+   { printf("No tilewidth attribute.\n"); return false; } //Default a 0
 
    if(element->QueryIntAttribute("tileheight", &tiledMap->tileHeight) != 0)
-   { printf("No tileheight attribute.\n"); return false; }
+   { printf("No tileheight attribute.\n"); return false; } //Default a 0
 
    tiledMap->width = tiledMap->tilesX * tiledMap->tileWidth;
    tiledMap->height = tiledMap->tilesY * tiledMap->tileHeight;
@@ -204,10 +204,10 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
    else tileset->name = nm;
 
    if(element->QueryIntAttribute("tilewidth", &tileset->tilewidth) != 0)
-   { printf("No tilewidth attribute.\n"); return false; }
+   { printf("No tilewidth attribute.\n"); return false; } //Default to 0
 
    if(element->QueryIntAttribute("tileheight", &tileset->tileheight) != 0)
-   { printf("No tileheight attribute.\n"); return false; }
+   { printf("No tileheight attribute.\n"); return false; } //Default to 0
 
    if(element->QueryIntAttribute("spacing", &tileset->spacing) != 0)
      printf("No spacing specified; defaulting to 0.\n");
@@ -277,10 +277,10 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
     else image->trans = str;
 
     if(element->QueryIntAttribute("width", &image->width) != 0)
-    { printf("No width specified for image... Aborting.\n"); return false;}
+    { printf("No width specified for image... Aborting.\n"); return false;} //Default to 0
 
     if(element->QueryIntAttribute("height", &image->height) != 0)
-    { printf("No height specified for image... Aborting.\n"); return false;}
+    { printf("No height specified for image... Aborting.\n"); return false;} //Default to 0
 
     return true;
  }
