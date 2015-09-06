@@ -1,4 +1,4 @@
-#include "TMX/Map.h"
+#include "Map.h"
 
 #include <iostream>
 

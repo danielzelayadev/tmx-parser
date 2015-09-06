@@ -1,4 +1,4 @@
-#include "TMX/ObjectLayer.h"
+#include "ObjectLayer.h"
 
 #include <string.h>
 

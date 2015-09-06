@@ -1,4 +1,4 @@
-#include "TMX/MapObject.h"
+#include "MapObject.h"
 
 #include <string.h>
 

@@ -1,4 +1,4 @@
-#include "TMX/Property.h"
+#include "Property.h"
 
 Property::Property()
 {

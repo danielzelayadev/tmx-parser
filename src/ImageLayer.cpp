@@ -1,5 +1,5 @@
-#include "TMX/ImageLayer.h"
-#include "TMX/Image.h"
+#include "ImageLayer.h"
+#include "Image.h"
 
 ImageLayer::ImageLayer():Layer()
 {

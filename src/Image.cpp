@@ -1,5 +1,5 @@
-#include "TMX/Image.h"
-#include "TMX/Data.h"
+#include "Image.h"
+#include "Data.h"
 
 Image::Image()
 {

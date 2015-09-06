@@ -1,4 +1,4 @@
-#include "TMX/RectangleMapObject.h"
+#include "RectangleMapObject.h"
 
 RectangleMapObject::RectangleMapObject():MapObject()
 {

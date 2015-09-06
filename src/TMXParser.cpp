@@ -1,5 +1,5 @@
-#include "TMX/TMXParser.h"
-#include "TMX/Data.h"
+#include "TMXParser.h"
+#include "Data.h"
 
 #include <sstream>
 
@@ -22,6 +22,11 @@ TMXParser::~TMXParser()
    if(tmxFile) delete tmxFile;
 }
 
+char* TMXParser::getError()
+{
+   return errorHandler.getError();
+}
+
 Map* TMXParser::parse(string fileDir)
 {
    this->fileDir = fileDir;
@@ -35,9 +40,9 @@ Map* TMXParser::parse(string fileDir)
 
 Map* TMXParser::parse()
 {
-   if(fileDir.size() < 5 || fileDir.substr(fileDir.size()-4, 4) != ".tmx") { printf("Not a TMX file.\n"); return nullptr;}
+   if(fileDir.size() < 5 || fileDir.substr(fileDir.size()-4, 4) != ".tmx") { errorHandler.setErrorId(WRONG_EXTENSION); return nullptr;}
 
-   if(tmxFile->LoadFile(fileDir.c_str()) != 0) { printf("File does not exist.\n"); return nullptr; }
+   if(tmxFile->LoadFile(fileDir.c_str()) != 0) { errorHandler.setErrorId(FILE_DOES_NOT_EXIST); return nullptr; }
 
    string path = "";
    int found = fileDir.find_last_of("/");
@@ -47,7 +52,7 @@ Map* TMXParser::parse()
 
    XMLNode* root = tmxFile->FirstChildElement();
 
-   if(!root) { printf("No map node\n"); return nullptr; }
+   if(!root) { errorHandler.setErrorId(NO_MAP_NODE); return nullptr; }
 
    printf("Beginning parse...\n\n");
 
@@ -88,7 +93,7 @@ Map* TMXParser::parse()
 
 bool TMXParser::loadMapAttributes(Map* tiledMap, XMLElement* element)
 {
-   if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+   if(!element) { errorHandler.setErrorId(MISSING_MAP_ATTRIBUTES); return false; }
 
    if(element->QueryFloatAttribute("version", &tiledMap->version) != 0) printf("No version attribute.\n");
 
@@ -96,19 +101,17 @@ bool TMXParser::loadMapAttributes(Map* tiledMap, XMLElement* element)
 
    ori = element->Attribute("orientation");
 
-   if(!ori) { printf("No orientation attribute.\n"); return false; }
+   if(!ori) { ori = "Orthogonal"; } //DEFAULTING
 
    tiledMap->orientation = ori;
 
-   if(element->QueryIntAttribute("width", &tiledMap->tilesX) != 0) { printf("No width attribute.\n"); return false; }
+   if(element->QueryIntAttribute("width", &tiledMap->tilesX) != 0) { tiledMap->tilesX = 0; } //DEFAULTING
 
-   if(element->QueryIntAttribute("height", &tiledMap->tilesY) != 0) { printf("No height attribute.\n"); return false; }
+   if(element->QueryIntAttribute("height", &tiledMap->tilesY) != 0) { tiledMap->tilesY = 0; } //DEFAULTING
 
-   if(element->QueryIntAttribute("tilewidth", &tiledMap->tileWidth) != 0)
-   { printf("No tilewidth attribute.\n"); return false; }
+   if(element->QueryIntAttribute("tilewidth", &tiledMap->tileWidth) != 0) { tiledMap->tileWidth = 0; } //DEFAULTING
 
-   if(element->QueryIntAttribute("tileheight", &tiledMap->tileHeight) != 0)
-   { printf("No tileheight attribute.\n"); return false; }
+   if(element->QueryIntAttribute("tileheight", &tiledMap->tileHeight) != 0) { tiledMap->tileHeight = 0; } //DEFAULTING
 
    tiledMap->width = tiledMap->tilesX * tiledMap->tileWidth;
    tiledMap->height = tiledMap->tilesY * tiledMap->tileHeight;
@@ -175,12 +178,12 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
  bool TMXParser::loadTileSetAttributes(Map* tiledMap, XMLElement* element)
  {
-   if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+   if(!element) { errorHandler.setErrorId(MISSING_TILESET_ATTRIBUTES); return false; }
 
    Tileset* tileset = tiledMap->tilesets.at(tiledMap->tilesets.size()-1);
 
    if(element->QueryIntAttribute("firstgid", &tileset->firstgid) != 0)
-   { printf("No firstgid attribute.\n"); return false; }
+   { errorHandler.setErrorId(NO_FIRSTGID_IN_TILESET); return false; }
 
    const char* src = "";
 
@@ -198,11 +201,9 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
    else tileset->name = nm;
 
-   if(element->QueryIntAttribute("tilewidth", &tileset->tilewidth) != 0)
-   { printf("No tilewidth attribute.\n"); return false; }
+   if(element->QueryIntAttribute("tilewidth", &tileset->tilewidth) != 0) { tileset->tilewidth = 0; } //DEFAULTING
 
-   if(element->QueryIntAttribute("tileheight", &tileset->tileheight) != 0)
-   { printf("No tileheight attribute.\n"); return false; }
+   if(element->QueryIntAttribute("tileheight", &tileset->tileheight) != 0) { tileset->tileheight = 0; } //DEFAULTING
 
    if(element->QueryIntAttribute("spacing", &tileset->spacing) != 0)
      printf("No spacing specified; defaulting to 0.\n");
@@ -249,7 +250,7 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
  bool TMXParser::loadImageAttributes(Image* image, XMLElement* element)
  {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_IMAGE_ATTRIBUTES); return false; }
 
     const char* str = "";
 
@@ -261,7 +262,7 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     str = element->Attribute("source");
 
-    if(!str) { printf("No source specified... Aborting.\n"); return false; }
+    if(!str) { errorHandler.setErrorId(NO_SOURCE_IN_IMAGE); return false; }
 
     image->source = str;
 
@@ -271,11 +272,9 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
     else image->trans = str;
 
-    if(element->QueryIntAttribute("width", &image->width) != 0)
-    { printf("No width specified for image... Aborting.\n"); return false;}
+    if(element->QueryIntAttribute("width", &image->width) != 0) { image->width = 0; } //DEFAULTING
 
-    if(element->QueryIntAttribute("height", &image->height) != 0)
-    { printf("No height specified for image... Aborting.\n"); return false;}
+    if(element->QueryIntAttribute("height", &image->height) != 0) { image->height = 0; } //DEFAULTING
 
     return true;
  }
@@ -305,13 +304,13 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
  bool TMXParser::loadDataAttributes(Data* data, XMLElement* element)
  {
 
-   if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+   if(!element) { errorHandler.setErrorId(MISSING_DATA_ATTRIBUTES); return false; }
 
    const char* str = "";
 
    str = element->Attribute("encoding");
 
-   if(!str) { printf("Data encoding not specified... Aborting.\n"); return false; }
+   if(!str) { errorHandler.setErrorId(NO_DATA_ENCODING_SPECIFIED); return false; }
 
    data->encoding = str;
 
@@ -326,8 +325,7 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
    else
    {
-     printf("\n%s is either not a valid encoding or is currently\nnot supported by the parser!...Aborting.\n",
-     data->encoding.c_str());
+     errorHandler.setErrorId(UNSUPPORTED_DATA_ENCODING);
      return false;
    }
 
@@ -362,10 +360,10 @@ bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
   bool TMXParser::loadTileAttributes(Tile* tile, XMLElement* element)
   {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_TILE_ATTRIBUTES); return false; }
 
     if(element->QueryIntAttribute("id", &tile->id) != 0)
-    { printf("No tile id specified... Aborting.\n"); return false; }
+    { errorHandler.setErrorId(NO_TILE_ID); return false; }
 
     const char* str = "";
 
@@ -402,7 +400,7 @@ bool TMXParser::loadProperties(vector<Property*>* properties, XMLNode* propertie
 
 bool TMXParser::loadPropertyAttributes(vector<Property*>* properties, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_PROPERTY_ATTRIBUTES); return false; }
 
     Property* prop = new Property();
 
@@ -446,18 +444,18 @@ bool TMXParser::loadTerrainTypes(vector<Terrain*>* terrains, XMLNode* terraintyp
 
 bool TMXParser::loadTerrainAttributes(vector<Terrain*>* terrains, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_TERRAIN_ATTRIBUTES); return false; }
 
     Terrain* terrain = new Terrain();
 
     const char* str = element->Attribute("name");
 
-    if(!str) { printf("Terrain name not specified... Aborting.\n"); return false; }
+    if(!str) { errorHandler.setErrorId(NO_NAME_IN_TERRAIN); return false; }
 
     terrain->name = str;
 
     if(element->QueryIntAttribute("tile", &terrain->tile) != 0)
-    { printf("No tile specified... Aborting.\n"); return false; }
+    { errorHandler.setErrorId(NO_TILE_IN_TERRAIN); return false; }
 
     terrains->push_back(terrain);
 
@@ -498,11 +496,11 @@ bool TMXParser::loadLayerNode(Map* tiledMap, XMLNode* layerNode)
 
 bool TMXParser::loadLayerAttributes(Layer* layer, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_LAYER_ATTRIBUTES); return false; }
 
     const char* str = element->Attribute("name");
 
-    if(!str) { printf("Layer name not specified... Aborting.\n"); return false; }
+    if(!str) { errorHandler.setErrorId(NO_NAME_IN_LAYER); return false; }
 
     layer->name = str;
 
@@ -659,7 +657,7 @@ bool TMXParser::loadObject(vector<MapObject*>* objects, XMLNode* objectNode)
 
 bool TMXParser::loadObjectAttributes(MapObject* object, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
     if(element->QueryIntAttribute("id", &object->id) != 0)
        printf("Object id not specified.\n");
@@ -689,7 +687,7 @@ bool TMXParser::loadObjectAttributes(MapObject* object, XMLElement* element)
 
 bool TMXParser::loadRectAttributes(RectangleMapObject* rmo, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
     if(element->QueryIntAttribute("x", &rmo->x) != 0)
        printf("X position not specified for rectangle object...Defaulting to 0.\n");
@@ -708,7 +706,7 @@ bool TMXParser::loadRectAttributes(RectangleMapObject* rmo, XMLElement* element)
 
 bool TMXParser::loadEllipseAttributes(EllipseMapObject* ellipse, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
     if(element->QueryIntAttribute("x", &ellipse->x) != 0)
        printf("X position not specified for ellipse object...Defaulting to 0.\n");
@@ -727,7 +725,7 @@ bool TMXParser::loadEllipseAttributes(EllipseMapObject* ellipse, XMLElement* ele
 
 bool TMXParser::loadPolygonAttributes(PolygonMapObject* poly, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES);return false; }
 
     const char* str = "";
 
@@ -769,7 +767,7 @@ bool TMXParser::loadPolygonAttributes(PolygonMapObject* poly, XMLElement* elemen
 
 bool TMXParser::loadPolylineAttributes(PolylineMapObject* poly, XMLElement* element)
 {
-    if(!element) { printf("Node doesn't have attributes.\n"); return false; }
+    if(!element) { errorHandler.setErrorId(MISSING_OBJECT_ATTRIBUTES); return false; }
 
     const char* str = "";
 

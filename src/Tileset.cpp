@@ -1,6 +1,6 @@
-#include "TMX/Tileset.h"
-#include "TMX/Image.h"
-#include "TMX/TileOffset.h"
+#include "Tileset.h"
+#include "Image.h"
+#include "TileOffset.h"
 
 #include <cmath>
 #include <stdio.h>
