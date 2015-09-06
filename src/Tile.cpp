@@ -1,4 +1,4 @@
-#include "TMX/Tile.h"
+#include "Tile.h"
 
 Tile::Tile()
 {

@@ -1,4 +1,4 @@
-#include "TMX/TileOffset.h"
+#include "TileOffset.h"
 
 TileOffset::TileOffset()
 {

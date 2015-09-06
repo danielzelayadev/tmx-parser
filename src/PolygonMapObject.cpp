@@ -1,4 +1,4 @@
-#include "TMX/PolygonMapObject.h"
+#include "PolygonMapObject.h"
 
 PolygonMapObject::PolygonMapObject():MapObject()
 {

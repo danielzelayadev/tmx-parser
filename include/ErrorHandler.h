@@ -1,6 +1,9 @@
 #ifndef ERRORHANDLER_H
 #define ERRORHANDLER_H
 
+enum Errors
+{
+};
 
 class ErrorHandler
 {

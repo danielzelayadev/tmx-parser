@@ -1,4 +1,4 @@
-#include "TMX/PolylineMapObject.h"
+#include "PolylineMapObject.h"
 
 PolylineMapObject::PolylineMapObject():MapObject()
 {

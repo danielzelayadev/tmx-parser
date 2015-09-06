@@ -1,4 +1,4 @@
-#include "TMX/Terrain.h"
+#include "Terrain.h"
 
 Terrain::Terrain()
 {

@@ -1,4 +1,4 @@
-#include "TMX/EllipseMapObject.h"
+#include "EllipseMapObject.h"
 
 EllipseMapObject::EllipseMapObject():MapObject()
 {

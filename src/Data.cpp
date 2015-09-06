@@ -1,5 +1,5 @@
-#include "TMX/Data.h"
-#include "TMX/Tile.h"
+#include "Data.h"
+#include "Tile.h"
 
 Data::Data()
 {

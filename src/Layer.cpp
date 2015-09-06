@@ -1,5 +1,5 @@
-#include "TMX/Layer.h"
-#include "TMX/Data.h"
+#include "Layer.h"
+#include "Data.h"
 
 #include <sstream>
 #include <stdio.h>

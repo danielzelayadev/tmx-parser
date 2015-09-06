@@ -1,5 +1,5 @@
-#include "TMX/TMXParser.h"
-#include "TMX/Data.h"
+#include "TMXParser.h"
+#include "Data.h"
 
 #include <sstream>
 
