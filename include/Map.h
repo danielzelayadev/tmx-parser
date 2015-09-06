@@ -51,8 +51,6 @@ class Map
         vector<Layer*> layers;
         vector<Property*> properties;
 
-        void print();
-
 };
 
 #endif // MAP_H
