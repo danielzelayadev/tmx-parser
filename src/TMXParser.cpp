@@ -1,6 +1,8 @@
 #include "TMXParser.h"
 #include "Data.h"
 
+#include "Map.h"
+
 #include <sstream>
 
 using std::stringstream;
@@ -40,7 +42,8 @@ Map* TMXParser::parse(string fileDir)
 
 Map* TMXParser::parse()
 {
-   if(fileDir.size() < 5 || fileDir.substr(fileDir.size()-4, 4) != ".tmx") { errorHandler.setErrorId(WRONG_EXTENSION); return nullptr;}
+   if(fileDir.size() < 5 || fileDir.substr(fileDir.size()-4, 4) != ".tmx")
+   { errorHandler.setErrorId(WRONG_EXTENSION); return nullptr;}
 
    if(tmxFile->LoadFile(fileDir.c_str()) != 0) { errorHandler.setErrorId(FILE_DOES_NOT_EXIST); return nullptr; }
 
@@ -54,7 +57,9 @@ Map* TMXParser::parse()
 
    if(!root) { errorHandler.setErrorId(NO_MAP_NODE); return nullptr; }
 
-   if(!loadMapAttributes(tiledMap, root->ToElement())) return nullptr;
+   MapLoader mapLoader(tmxFile);
+
+   if(!mapLoader.loadMapAttributes(tiledMap, root->ToElement())) return nullptr;
 
    XMLNode* tmp = root->FirstChildElement();
 
@@ -85,40 +90,6 @@ Map* TMXParser::parse()
    }
 
    return tiledMap;
-}
-
-bool TMXParser::loadMapAttributes(Map* tiledMap, XMLElement* element)
-{
-   if(!element) { errorHandler.setErrorId(MISSING_MAP_ATTRIBUTES); return false; }
-
-   if(element->QueryFloatAttribute("version", &tiledMap->version) != 0) printf("No version attribute.\n");
-
-   const char* ori = "";
-
-   ori = element->Attribute("orientation");
-
-   if(!ori) { ori = "Orthogonal"; } //DEFAULTING
-
-   tiledMap->orientation = ori;
-
-   element->QueryIntAttribute("width", &tiledMap->tilesX); //DEFAULTING
-
-   element->QueryIntAttribute("height", &tiledMap->tilesY); //DEFAULTING
-
-   element->QueryIntAttribute("tilewidth", &tiledMap->tileWidth); //DEFAULTING
-
-   element->QueryIntAttribute("tileheight", &tiledMap->tileHeight); //DEFAULTING
-
-   tiledMap->width = tiledMap->tilesX * tiledMap->tileWidth;
-   tiledMap->height = tiledMap->tilesY * tiledMap->tileHeight;
-
-   const char* ro = "";
-
-   ro = element->Attribute("renderorder");
-
-   if(ro) tiledMap->renderOrder = ro;
-
-   return true;
 }
 
 bool TMXParser::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)

@@ -31,6 +31,7 @@ class Map
         Layer* getLayer(int i);
 
         friend class TMXParser;
+        friend class MapLoader;
         friend class MapRenderer;
 
     private:
