@@ -8,7 +8,7 @@ class Map;
 class MapLoader : public TMXLoader
 {
     public:
-        MapLoader(XMLDocument* tmxFile):TMXLoader(tmxFile) {};
+        MapLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
 
         friend class TMXParser;
 

@@ -4,7 +4,7 @@
 
 bool MapLoader::loadMapAttributes(Map* tiledMap, XMLElement* element)
 {
-   if(!element) { errorHandler.setErrorId(MISSING_MAP_ATTRIBUTES); return false; }
+   if(!element) { errorHandler->setErrorId(MISSING_MAP_ATTRIBUTES); return false; }
 
    if(element->QueryFloatAttribute("version", &tiledMap->version) != 0) printf("No version attribute.\n");
 

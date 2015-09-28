@@ -1,6 +1,7 @@
 #include "TMXLoader.h"
 
-TMXLoader::TMXLoader(XMLDocument* tmxFile)
+TMXLoader::TMXLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler)
 {
    this->tmxFile = tmxFile;
+   this->errorHandler = errorHandler;
 }

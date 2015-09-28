@@ -10,13 +10,13 @@ using namespace tinyxml2;
 class TMXLoader
 {
     public:
-        TMXLoader(XMLDocument* tmxFile);
+        TMXLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler);
 
         friend class TMXParser;
 
     protected:
         XMLDocument* tmxFile;
-        ErrorHandler errorHandler;
+        ErrorHandler* errorHandler;
 
 };
 

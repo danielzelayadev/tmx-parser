@@ -32,6 +32,7 @@ class MapObject
         Image* image;
 
         friend class TMXParser;
+        friend class ObjectLoader;
 
         string getProperty(int i);
         string getProperty(string name);

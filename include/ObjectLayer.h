@@ -22,6 +22,7 @@ class ObjectLayer : public Layer
 
         friend class TMXParser;
         friend class MapRenderer;
+        friend class LayerLoader;
 
     private:
         vector<MapObject*> objects;
