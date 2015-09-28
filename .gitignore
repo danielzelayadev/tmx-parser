@@ -34,3 +34,5 @@
 *.layout
 main.cpp
 *.cbp
+*.tmx
+*.png
