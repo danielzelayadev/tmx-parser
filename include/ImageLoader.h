@@ -8,7 +8,7 @@ class Image;
 class ImageLoader : public TMXLoader
 {
     public:
-        ImageLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
+        ImageLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler):TMXLoader(tmxFile, map, errorHandler) {};
 
         friend class TilesetLoader;
         friend class LayerLoader;

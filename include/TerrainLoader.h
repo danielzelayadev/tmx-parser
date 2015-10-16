@@ -12,7 +12,7 @@ class Terrain;
 class TerrainLoader : public TMXLoader
 {
     public:
-        TerrainLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
+        TerrainLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler):TMXLoader(tmxFile, map, errorHandler) {};
 
         friend class TilesetLoader;
 

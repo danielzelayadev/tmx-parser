@@ -25,7 +25,7 @@ bool TilesetLoader::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
       else if(!strcmp(tmp->Value(), "image"))
       {
         Image* image = tiledMap->tilesets.back()->image;
-        ImageLoader imageLoader(tmxFile, errorHandler);
+        ImageLoader imageLoader(tmxFile, map, errorHandler);
         if(!imageLoader.loadImageNode(image, tmp)) return false;
       }
       else if(!strcmp(tmp->Value(), "tile"))
@@ -37,17 +37,17 @@ bool TilesetLoader::loadTileSetNode(Map* tiledMap, XMLNode* tilesetNode)
 
         else tile = tiledMap->tilesets.back()->tiles.back();
 
-        TileLoader tileLoader(tmxFile, errorHandler);
+        TileLoader tileLoader(tmxFile, map, errorHandler);
         if(!tileLoader.loadTileNode(tile, tmp)) return false;
       }
       else if(!strcmp(tmp->Value(), "terraintypes"))
       {
-        TerrainLoader terrainLoader(tmxFile, errorHandler);
+        TerrainLoader terrainLoader(tmxFile, map, errorHandler);
         if(!terrainLoader.loadTerrainTypes(&tiledMap->tilesets.back()->terrainTypes, tmp)) return false;
       }
       else if(!strcmp(tmp->Value(), "properties"))
       {
-        PropertyLoader propertyLoader(tmxFile, errorHandler);
+        PropertyLoader propertyLoader(tmxFile, map, errorHandler);
         if(!propertyLoader.loadProperties(&tiledMap->tilesets.back()->properties, tmp)) return false;
       }
 

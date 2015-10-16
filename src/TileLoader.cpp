@@ -20,7 +20,7 @@ bool TileLoader::loadTileNode(Tile* tile, XMLNode* tileNode)
 
      else if(!strcmp(tmp->Value(), "properties"))
      {
-        PropertyLoader propertyLoader(tmxFile, errorHandler);
+        PropertyLoader propertyLoader(tmxFile, map, errorHandler);
         if(!propertyLoader.loadProperties(&tile->properties, tmp)) return false;
      }
 

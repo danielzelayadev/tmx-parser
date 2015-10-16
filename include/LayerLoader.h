@@ -11,7 +11,7 @@ class ObjectLayer;
 class LayerLoader : public TMXLoader
 {
     public:
-        LayerLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
+        LayerLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler):TMXLoader(tmxFile, map, errorHandler) {};
 
         friend class TMXParser;
 

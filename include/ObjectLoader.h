@@ -16,7 +16,7 @@ class PolylineMapObject;
 class ObjectLoader : public TMXLoader
 {
     public:
-        ObjectLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
+        ObjectLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler):TMXLoader(tmxFile, map, errorHandler) {};
 
         friend class LayerLoader;
 

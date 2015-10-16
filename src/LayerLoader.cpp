@@ -21,15 +21,13 @@ bool LayerLoader::loadLayerNode(Map* tiledMap, XMLNode* layerNode)
 
        if(!strcmp(tmp->Value(), "data"))
        {
-          DataLoader dataLoader(tmxFile, errorHandler);
+          DataLoader dataLoader(tmxFile, map, errorHandler);
           if(!dataLoader.loadDataNode(layer->layerData, tmp)) return false;
-
-          layer->convertData();
        }
 
        else if(!strcmp(tmp->Value(), "properties"))
        {
-         PropertyLoader propertyLoader(tmxFile, errorHandler);
+         PropertyLoader propertyLoader(tmxFile, map, errorHandler);
          if(!propertyLoader.loadProperties(&layer->properties, tmp)) return false;
        }
 
@@ -71,12 +69,12 @@ bool LayerLoader::loadImageLayerNode(Map* tiledMap, XMLNode* imageLayerNode)
 
       if(!strcmp(tmp->Value(), "properties"))
       {
-         PropertyLoader propertyLoader(tmxFile, errorHandler);
+         PropertyLoader propertyLoader(tmxFile, map, errorHandler);
          if(!propertyLoader.loadProperties(&iLayer->properties, tmp)) return false;
       }
       else if(!strcmp(tmp->Value(), "image"))
       {
-         ImageLoader imageLoader(tmxFile, errorHandler);
+         ImageLoader imageLoader(tmxFile, map, errorHandler);
          if(!imageLoader.loadImageNode(iLayer->image, tmp)) return false;
       }
 
@@ -112,13 +110,13 @@ bool LayerLoader::loadObjectGroupNode(Map* tiledMap, XMLNode* objectGroupNode)
 
       if(!strcmp(tmp->Value(), "object"))
       {
-         ObjectLoader objectLoader(tmxFile, errorHandler);
+         ObjectLoader objectLoader(tmxFile, map, errorHandler);
          if(!objectLoader.loadObject(&oLayer->objects, tmp)) return false;
       }
 
       else if(!strcmp(tmp->Value(), "properties"))
       {
-        PropertyLoader propertyLoader(tmxFile, errorHandler);
+        PropertyLoader propertyLoader(tmxFile, map, errorHandler);
         if(!propertyLoader.loadProperties(&oLayer->properties, tmp)) return false;
       }
 

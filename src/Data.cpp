@@ -5,7 +5,7 @@ Data::Data()
 {
     this->compression = "";
     this->encoding = "";
-    this->data = "";
+    this->data = nullptr;
     this->tile = new Tile();
 }
 

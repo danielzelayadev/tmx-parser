@@ -57,7 +57,7 @@ Map* TMXParser::parse()
 
    if(!root) { errorHandler.setErrorId(NO_MAP_NODE); return nullptr; }
 
-   MapLoader mapLoader(tmxFile, &errorHandler);
+   MapLoader mapLoader(tmxFile, tiledMap, &errorHandler);
 
    if(!mapLoader.loadMapAttributes(tiledMap, root->ToElement())) return nullptr;
 
@@ -68,27 +68,27 @@ Map* TMXParser::parse()
 
      if(!strcmp(tmp->Value(), "tileset"))
      {
-       TilesetLoader tilesetLoader(tmxFile, &errorHandler);
+       TilesetLoader tilesetLoader(tmxFile, tiledMap, &errorHandler);
        if(!tilesetLoader.loadTileSetNode(tiledMap, tmp)) return nullptr;
      }
      else if(!strcmp(tmp->Value(), "layer"))
      {
-       LayerLoader layerLoader(tmxFile, &errorHandler);
+       LayerLoader layerLoader(tmxFile, tiledMap, &errorHandler);
        if(!layerLoader.loadLayerNode(tiledMap, tmp)) return nullptr;
      }
      else if(!strcmp(tmp->Value(), "objectgroup"))
      {
-       LayerLoader layerLoader(tmxFile, &errorHandler);
+       LayerLoader layerLoader(tmxFile, tiledMap, &errorHandler);
        if(!layerLoader.loadObjectGroupNode(tiledMap, tmp)) return nullptr;
      }
      else if(!strcmp(tmp->Value(), "imagelayer"))
      {
-        LayerLoader layerLoader(tmxFile, &errorHandler);
+        LayerLoader layerLoader(tmxFile, tiledMap, &errorHandler);
        if(!layerLoader.loadImageLayerNode(tiledMap, tmp)) return nullptr;
      }
      else if(!strcmp(tmp->Value(), "properties"))
      {
-        PropertyLoader propertyLoader(tmxFile, &errorHandler);
+        PropertyLoader propertyLoader(tmxFile, tiledMap, &errorHandler);
         if(!propertyLoader.loadProperties(&tiledMap->properties, tmp)) return nullptr;
      }
      tmp = tmp->NextSibling();

@@ -24,13 +24,10 @@ class Layer
         bool visible;
 
         Data* layerData;
-        short* data;
 
         int tilesX, tilesY;
 
         vector<Property*> properties;
-
-        void convertData();
 };
 
 #endif // LAYER_H

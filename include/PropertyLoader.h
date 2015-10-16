@@ -12,7 +12,7 @@ class Property;
 class PropertyLoader : public TMXLoader
 {
     public:
-        PropertyLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
+        PropertyLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler):TMXLoader(tmxFile, map, errorHandler) {};
 
         friend class TileLoader;
         friend class TMXParser;

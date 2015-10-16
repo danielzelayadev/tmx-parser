@@ -13,7 +13,7 @@ class Data
 
         std::string encoding;
         std::string compression;
-        std::string data;
+        short* data;
 
         Tile* tile;
 };

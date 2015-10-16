@@ -4,6 +4,12 @@
 
 #include "TileLoader.h"
 
+#include "Map.h"
+
+#include <sstream>
+
+using std::stringstream;
+
 bool DataLoader::loadDataNode(Data* data, XMLNode* dataNode)
  {
     if(!loadDataAttributes(data, dataNode->ToElement())) return false;
@@ -15,7 +21,7 @@ bool DataLoader::loadDataNode(Data* data, XMLNode* dataNode)
 
       if(!strcmp(tmp->Value(), "tile"))
       {
-         TileLoader tileLoader(tmxFile, errorHandler);
+         TileLoader tileLoader(tmxFile, map, errorHandler);
          if(!tileLoader.loadTileNode(data->tile, tmp)) return false;
       }
 
@@ -44,7 +50,7 @@ bool DataLoader::loadDataNode(Data* data, XMLNode* dataNode)
    if(str) data->compression = str;
 
    if(!strcmp(data->encoding.c_str(), "csv"))
-     data->data = element->GetText();
+     data->data = converCSVData(element->GetText());
 
    else
    {
@@ -54,3 +60,42 @@ bool DataLoader::loadDataNode(Data* data, XMLNode* dataNode)
 
    return true;
  }
+
+ short* DataLoader::converCSVData(string data_string)
+ {
+   string tmp = data_string;
+
+   short* data = new short[map->getTilesX()*map->getTilesY()];
+
+   int dCtr = 0;
+
+   while(true)
+   {
+      string valStr("");
+      stringstream strm;
+
+      if(tmp.find(",") == tmp.npos)
+      {
+        valStr = tmp.substr(0, tmp.size()-1);
+        strm << valStr;
+        strm >> data[dCtr];
+        break;
+      }
+
+      int firstCommaIndex = tmp.find_first_of(",");
+
+      valStr = tmp.substr(0, firstCommaIndex);
+      strm << valStr;
+      strm >> data[dCtr];
+
+      dCtr++;
+      tmp = tmp.substr(firstCommaIndex+1, tmp.size()-firstCommaIndex+1);
+   }
+
+    return data;
+ }
+
+bool DataLoader::loadBase64_Uncompressed(string data)
+{
+
+}

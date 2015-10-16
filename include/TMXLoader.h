@@ -5,17 +5,20 @@
 
 #include <ErrorHandler.h>
 
+class Map;
+
 using namespace tinyxml2;
 
 class TMXLoader
 {
     public:
-        TMXLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler);
+        TMXLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler);
 
         friend class TMXParser;
 
     protected:
         XMLDocument* tmxFile;
+        Map* map;
         ErrorHandler* errorHandler;
 
 };

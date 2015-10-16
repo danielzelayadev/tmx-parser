@@ -8,7 +8,7 @@ class Map;
 class TilesetLoader : public TMXLoader
 {
     public:
-        TilesetLoader(XMLDocument* tmxFile, ErrorHandler* errorHandler):TMXLoader(tmxFile, errorHandler) {};
+        TilesetLoader(XMLDocument* tmxFile, Map* map, ErrorHandler* errorHandler):TMXLoader(tmxFile, map, errorHandler) {};
 
         friend class TMXParser;
 

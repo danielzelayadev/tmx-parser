@@ -28,14 +28,14 @@ bool ObjectLoader::loadObject(vector<MapObject*>* objects, XMLNode* objectNode)
 
       if(!strcmp(tmp->Value(), "properties"))
       {
-         PropertyLoader propertyLoader(tmxFile, errorHandler);
+         PropertyLoader propertyLoader(tmxFile, map, errorHandler);
          if(!propertyLoader.loadProperties(&object.properties, tmp)) return false;
       }
 
       else if(!strcmp(tmp->Value(), "image"))
       {
          object.image = new Image();
-         ImageLoader imageLoader(tmxFile, errorHandler);
+         ImageLoader imageLoader(tmxFile, map, errorHandler);
          if(!imageLoader.loadImageNode(object.image, tmp)) return false;
       }
 

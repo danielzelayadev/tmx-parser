@@ -15,7 +15,7 @@ bool ImageLoader::loadImageNode(Image* image, XMLNode* imageNode)
 
        if(!strcmp(tmp->Value(), "data"))
        {
-          DataLoader dataLoader(tmxFile, errorHandler);
+          DataLoader dataLoader(tmxFile, map, errorHandler);
           if(!dataLoader.loadDataNode(image->imageData, tmp)) return false;
        }
 
